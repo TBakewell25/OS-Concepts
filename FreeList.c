@@ -24,10 +24,11 @@ void* mallocc(size_t space, node_t* head){
 			
 			void* allocatedSpace = mmap(head,space+sizeof(header_t), 
 					PROT_READ|PROT_WRITE, MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
-			header_t* ptr =  (&allocatedSpace) -1;
-			ptr->size = space+sizeof(node_t);
+			void* returnedMem = allocatedSpace+8;
+			header_t* ptr = allocatedSpace;
+			ptr->size = space;
 			ptr->magic = random();
-			return allocatedSpace;
+			return returnedMem;
 		}
 		break;
 	}
@@ -35,23 +36,25 @@ void* mallocc(size_t space, node_t* head){
 }
 
 int main(void){
-	node_t* head = mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);	head->size = 4096 - sizeof(node_t);
+	node_t* head = mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);	
+	head->size = 4096 - sizeof(node_t);
 	head->next = NULL;
 	
-	int* test = (int*) mallocc(10*sizeof(int), head);
+	int* test = (int*) mallocc(sizeof(int), head);
 	
 	if (test == NULL){
 		printf("Malloc Failed\n");
 		return -1;
 	}
 
-	int val = 5;
+	int val = 11;
 	test = &val;
-	//printf("%d", (*test));
-	//printf("Remaining Size = %d\n", head->size);
+	printf("Stored Value: %d\n", (*test));
+	printf("Remaining Size = %d\n", head->size);
 	
-	header_t* header = (header_t*) test -1;
-	//printf("%d\n", header->magic);
+	header_t* header = (header_t*) test-8;
+	printf("Magic: %d\n", header->magic);
+	printf("size: %d\n", header->size);
 	return 0;
 }
 
