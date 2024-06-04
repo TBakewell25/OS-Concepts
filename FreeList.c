@@ -6,53 +6,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "FreeList.h"
 
-typedef struct __node_t {
-	int size;
-	struct __node_t *next;
-} node_t;
-
-typedef struct {
-	int size;
-	int magic;
-} header_t;
-
-void* mallocc(size_t space, node_t* head){
-	while (head->next == NULL){
-		if (head->size >= space){
-			head->size = head->size - (space + sizeof(node_t));
-			
-			void* allocatedSpace = mmap(head,space+sizeof(header_t), 
-					PROT_READ|PROT_WRITE, MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
-			void* returnedMem = allocatedSpace+8;
-			header_t* ptr = allocatedSpace;
-			ptr->size = space;
-			ptr->magic = random();
-			return returnedMem;
-		}
-		break;
-	}
-	return NULL;
+node_t*  allocateHeap(const int size){
+	node_t* head = mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);	
+	head->size = size - sizeof(node_t);
+	head->next = NULL;
+	return head;
 }
 
 int main(void){
-	node_t* head = mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);	
-	head->size = 4096 - sizeof(node_t);
-	head->next = NULL;
-	
+	node_t* head = allocateHeap(4096);
 	int* test = (int*) mallocc(sizeof(int), head);
-	
 	if (test == NULL){
 		printf("Malloc Failed\n");
 		return -1;
 	}
 
 	int val = 11;
-	test = &val;
+	*test = val;
 	printf("Stored Value: %d\n", (*test));
 	printf("Remaining Size = %d\n", head->size);
-	
-	header_t* header = (header_t*) test-8;
+
+	printf("%d\n", sizeof(header_t*));
+	test = test - sizeof(header_t*);
+	header_t* header = (header_t*) test;
 	printf("Magic: %d\n", header->magic);
 	printf("size: %d\n", header->size);
 	return 0;
