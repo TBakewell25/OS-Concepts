@@ -23,16 +23,8 @@ int main(void){
 		return -1;
 	}
 
-	int val = 11;
-	*test = val;
-	printf("Stored Value: %d\n", (*test));
-	printf("Remaining Size = %d\n", head->size);
+	freed(test, head);
 
-	printf("%d\n", sizeof(header_t*));
-	test = test - sizeof(header_t*);
-	header_t* header = (header_t*) test;
-	printf("Magic: %d\n", header->magic);
-	printf("size: %d\n", header->size);
 	return 0;
 }
 
