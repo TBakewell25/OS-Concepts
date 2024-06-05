@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <string.h>
 
+
 //struct for heap node
 typedef struct __node_t {
 	int size;
@@ -20,13 +21,15 @@ typedef struct {
 	int magic;
 } header_t;
 
+node_t* heap;
 //like 'malloc()', but worse
-void* mallocc(size_t space, node_t* heap){
+void* mallocc(size_t space){
 	size_t netSize = space + sizeof(header_t*);
 	if (heap->size >= netSize){
 		void* base = heap;
+		printf("Initial heap: %p\n", heap);
 		heap = (node_t*) memcpy(heap+netSize, heap, sizeof(node_t*));
-	        
+	        printf("Second heap: %p\n", heap);
 		header_t* newMemHead = (header_t*) base;
 		newMemHead->magic = random();
 		newMemHead->size = space;
@@ -36,7 +39,7 @@ void* mallocc(size_t space, node_t* heap){
 	}
 	if ((heap->size < netSize) && (heap->next != NULL)){
 		heap = heap->next;
-		void* allocatedMemory = mallocc(space, heap);
+		void* allocatedMemory = mallocc(space);
 		return allocatedMemory;
 	}
 	else{
@@ -45,13 +48,14 @@ void* mallocc(size_t space, node_t* heap){
 
 }
 
-void freed(void* header, node_t* heap){
-	header_t* memHeader = (header_t*) header -1;
+void freed(void* header){
+	header_t* memHeader = (void*) header - 12;
 	size_t memSize = memHeader->size;
-	memset(memHeader, 0, memSize + sizeof(header_t*));
+	//memset(memHeader, 0, memSize + sizeof(header_t*));
 	
 	node_t* fd = memcpy(heap, memHeader, sizeof(node_t*));
 	fd->size = fd->size + memSize+sizeof(header_t*);
+	printf("%d\n", fd->size);
 	return;
 }
 

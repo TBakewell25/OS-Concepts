@@ -16,14 +16,14 @@ node_t*  allocateHeap(const int size){
 }
 
 int main(void){
-	node_t* head = allocateHeap(4096);
-	int* test = (int*) mallocc(sizeof(int), head);
+	heap = allocateHeap(4096);
+	int* test = (int*) mallocc(sizeof(int));
 	if (test == NULL){
 		printf("Malloc Failed\n");
 		return -1;
 	}
 
-	freed(test, head);
+	freed(test);
 
 	return 0;
 }
