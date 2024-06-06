@@ -27,10 +27,9 @@ void* mallocc(size_t space){
 	size_t netSize = space + sizeof(header_t*);
 	if (heap->size >= netSize){
 		void* base = heap;
-		printf("Initial heap: %p\n", heap);
 		heap = (node_t*) memcpy(heap+netSize, heap, sizeof(node_t*));
-	        printf("Second heap: %p\n", heap);
 		header_t* newMemHead = (header_t*) base;
+		
 		newMemHead->magic = random();
 		newMemHead->size = space;
 
@@ -51,9 +50,8 @@ void* mallocc(size_t space){
 void freed(void* header){
 	header_t* memHeader = (void*) header - 12;
 	size_t memSize = memHeader->size;
-	//memset(memHeader, 0, memSize + sizeof(header_t*));
 	
-	node_t* fd = memcpy(heap, memHeader, sizeof(node_t*));
+	node_t* fd = heap;
 	fd->size = fd->size + memSize+sizeof(header_t*);
 	printf("%d\n", fd->size);
 	return;

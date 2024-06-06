@@ -10,7 +10,8 @@
 
 node_t*  allocateHeap(const int size){
 	node_t* head = mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);	
-	head->size = size - sizeof(node_t);
+	head->size = size - sizeof(node_t*);
+	printf("%d\n", head->size);
 	head->next = NULL;
 	return head;
 }
