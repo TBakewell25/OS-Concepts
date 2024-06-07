@@ -22,19 +22,26 @@ typedef struct {
 } header_t;
 
 node_t* heap;
+
 //like 'malloc()', but worse
 void* mallocc(size_t space){
 	size_t netSize = space + sizeof(header_t*);
-	if (heap->size >= netSize){
-		void* base = heap;
-		heap = (node_t*) memcpy(heap+netSize, heap, sizeof(node_t*));
-		header_t* newMemHead = (header_t*) base;
-		
-		newMemHead->magic = random();
-		newMemHead->size = space;
+	int heapSize = heap->size;
+	node_t* nextMem = heap->next;
 
-		void* allocatedMem = base + netSize;
-		return allocatedMem;		
+	if (heap->size >= netSize){
+
+		header_t* newHeader = (void*)heap;
+		heap = (node_t*)((char*) heap + netSize);
+		heap->size = heapSize - netSize;
+		heap->next = nextMem;
+
+		void* allocatedMem =  newHeader + 1;
+
+		newHeader->size = space;
+		newHeader->magic = random();
+		
+		return allocatedMem;
 	}
 	if ((heap->size < netSize) && (heap->next != NULL)){
 		heap = heap->next;
@@ -47,12 +54,15 @@ void* mallocc(size_t space){
 
 }
 
-void freed(void* header){
-	header_t* memHeader = (void*) header - 12;
-	size_t memSize = memHeader->size;
-	
-	node_t* fd = heap;
-	fd->size = fd->size + memSize+sizeof(header_t*);
-	return;
+void freed(void* mem){
+	int freeSpace = heap->size;
+	node_t* nextMem = heap->next;
+
+	heap = mem - sizeof(header_t*);
+	header_t* header = (header_t*) heap;
+
+	heap->size = freeSpace + header->size + sizeof(header_t*);
+	heap->next = nextMem;
+
 }
 

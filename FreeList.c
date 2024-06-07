@@ -18,11 +18,11 @@ node_t*  allocateHeap(const int size){
 int main(void){
 	heap = allocateHeap(4096);
 	int* test = (int*) mallocc(sizeof(int));
+	char* test2 = (char*) mallocc(sizeof(char));
 	if (test == NULL){
 		printf("Malloc Failed\n");
 		return -1;
 	}
-	char* test2 = (char*) mallocc(sizeof(char));
 
 	freed(test);
 	freed(test2);
