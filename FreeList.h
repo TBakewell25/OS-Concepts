@@ -53,7 +53,6 @@ void freed(void* header){
 	
 	node_t* fd = heap;
 	fd->size = fd->size + memSize+sizeof(header_t*);
-	printf("%d\n", fd->size);
 	return;
 }
 
