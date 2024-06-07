@@ -26,15 +26,16 @@ node_t* heap;
 void* mallocc(size_t space){
 	size_t netSize = space + sizeof(header_t*);
 	if (heap->size >= netSize){
-		void* base = heap;
-		heap = (node_t*) memcpy(heap+netSize, heap, sizeof(node_t*));
-		header_t* newMemHead = (header_t*) base;
-		
-		newMemHead->magic = random();
-		newMemHead->size = space;
 
-		void* allocatedMem = base + netSize;
-		return allocatedMem;		
+		header_t* newHeader = (void*)heap;
+		heap = (node_t*)((char*) heap + netSize);
+	
+		void* allocatedMem =  newHeader + 1;
+
+		newHeader->size = space;
+		newHeader->magic = random();
+		
+		return allocatedMem;
 	}
 	if ((heap->size < netSize) && (heap->next != NULL)){
 		heap = heap->next;
@@ -48,12 +49,16 @@ void* mallocc(size_t space){
 }
 
 void freed(void* header){
-	header_t* memHeader = (void*) header - 12;
+	heap = (node_t*) header - 1;
+	header_t* memHeader = (header_t*)((char*)header -1);
+/*
+	header_t* memHeader = (header_t*) header - 1;
 	size_t memSize = memHeader->size;
 	
 	node_t* fd = heap;
 	fd->size = fd->size + memSize+sizeof(header_t*);
 	printf("%d\n", fd->size);
 	return;
+*/
 }
 
