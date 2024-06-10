@@ -21,6 +21,7 @@ typedef struct {
 	int magic;
 } header_t;
 
+//initialize heap
 node_t* heap;
 
 //like 'malloc()', but worse
@@ -29,7 +30,7 @@ void* mallocc(size_t space){
 	int heapSize = heap->size;
 	node_t* nextMem = heap->next;
 
-	if (heap->size >= netSize){
+	if (heap->size >= netSize){ //if heap has enough space to allocate
 
 		header_t* newHeader = (void*)heap;
 		heap = (node_t*)((char*) heap + netSize);
@@ -43,7 +44,7 @@ void* mallocc(size_t space){
 		
 		return allocatedMem;
 	}
-	if ((heap->size < netSize) && (heap->next != NULL)){
+	if ((heap->size < netSize) && (heap->next != NULL)){//check next heap block
 		heap = heap->next;
 		void* allocatedMemory = mallocc(space);
 		return allocatedMemory;
@@ -54,7 +55,7 @@ void* mallocc(size_t space){
 
 }
 
-void freed(void* mem){
+void freed(void* mem){//free memory
 	int freeSpace = heap->size;
 	node_t* nextMem = heap->next;
 
