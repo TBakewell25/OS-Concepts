@@ -24,8 +24,8 @@ int main(void){
 		return -1;
 	}
 
-	freed(test);
 	freed(test2);
+	freed(test);
 
 	return 0;
 }
