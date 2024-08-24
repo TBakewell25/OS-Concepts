@@ -6,26 +6,25 @@
 struct args{
 	int* counter; 
 	void* mutex;
-};
+}; //struct for args to pass to threads
 	
 
-void* count_func(void* args){
-	int* counter = ((struct args*)args)->counter;
+void* count_func(void* args){ //threaded function to count
+	int* counter = ((struct args*)args)->counter; 
 	struct lock* mutex = ((struct args*)args)->mutex;
 
-	int threshold = 1000, lcounter = 0, i;
+	int threshold = 7500, lcounter = 0, i;
 	
-	while ((*counter) < 1000000){
+	while ((*counter) < 1000000){ 
 		for (i=0; i < threshold; i++){
 			lcounter++;
-			//printf("%d", lcounter);
 			}
 		
-		acquire_lock(mutex);
-		if (*counter < 1000000){
+		acquire_lock(mutex); //acquire the lock
+		if (*counter < 1000000){ //atomically update counter
 			*counter = ((*counter) + lcounter);
 		}
-		release_lock(mutex);
+		release_lock(mutex); //release the lock
 		
 		lcounter = 0;
 	}
@@ -42,13 +41,25 @@ int main(){
 	args->mutex = init_lock();
 	
 	
-	pthread_create(&thread1, NULL, &count_func, args);	
-	pthread_create(&thread2, NULL, &count_func, args);
+	if (pthread_create(&thread1, NULL, &count_func, args) ==1){
+		printf("\nERROR: THREAD CREATION\n");
+		return 1;
+	}
 
+	if (pthread_create(&thread2, NULL, &count_func, args) ==1){
+		printf("\nERROR: THREAD CREATION\n");
+		return 1;
+	}
 	
-	pthread_join(thread1, NULL);
-	pthread_join(thread2, NULL);
+	if (pthread_join(thread1, NULL) == 1){
+		printf("ERROR: JOINING THREAD 1");
+		return 1;
+	}	
 
+	if (pthread_join(thread2, NULL) == 1){
+		printf("ERROR: JOINING THREAD 2");
+		return 1;
+	}
 	printf("Final count: %d\n", (*(args->counter)));
 	return 0;
 }
