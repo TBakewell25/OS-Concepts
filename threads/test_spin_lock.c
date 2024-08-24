@@ -13,17 +13,21 @@ void* count_func(void* args){
 	int* counter = ((struct args*)args)->counter;
 	struct lock* mutex = ((struct args*)args)->mutex;
 
-	int threshold = 500, lcounter = 0, i;
-
+	int threshold = 1000, lcounter = 0, i;
 	
-	while ((*counter) < 1000 && lcounter < threshold){
+	while ((*counter) < 1000000){
 		for (i=0; i < threshold; i++){
 			lcounter++;
 			//printf("%d", lcounter);
 			}
+		
 		acquire_lock(mutex);
-		counter = (counter + lcounter);
+		if (*counter < 1000000){
+			*counter = ((*counter) + lcounter);
+		}
 		release_lock(mutex);
+		
+		lcounter = 0;
 	}
 	return NULL;
 }	
@@ -45,7 +49,7 @@ int main(){
 	pthread_join(thread1, NULL);
 	pthread_join(thread2, NULL);
 
-	printf("Final count: %d", (*(args->counter)));
+	printf("Final count: %d\n", (*(args->counter)));
 	return 0;
 }
 
