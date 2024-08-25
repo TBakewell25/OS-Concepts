@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
-#include "lock.h"
-
+#include "utils/lock.h"
+#include "utils/thread_utils.h"
 struct args{
 	int* counter; 
 	void* mutex;
@@ -31,30 +31,7 @@ void* count_func(void* args){ //threaded function to count
 	return NULL;
 }
 
-void* create_threads(const int num, void* args){
-	pthread_t* threads = malloc(sizeof(pthread_t) * num);
-	for (int i = 0; i < num; i++){
-		pthread_t newThread;	
-		if (pthread_create(&newThread, NULL, &count_func, args) ==1){
-			printf("\nERROR: THREAD CREATION\n");
-			return NULL;
-		}
-		threads[i] = newThread;	
-	}
-	return threads;
-}
 
-int destroy_threads(int num, pthread_t* threads){
-	for (int i = 0; i < num; i++){
-		pthread_t thread = threads[i];	
-		if (pthread_join(thread, NULL) == 1){
-			printf("ERROR: JOINING THREAD 1");
-			return 1;
-		}
-	}
-	free(threads);
-	return 0;
-}
 	
 
 int main(int argc, char** argv){
@@ -68,7 +45,7 @@ int main(int argc, char** argv){
 	args->mutex = init_lock();
 	
 	pthread_t* threads;
-	if (!(threads = create_threads(thread_count, args))){
+	if (!(threads = create_threads(thread_count, args, &count_func))){
 		printf("ERROR: CREATING THREADS");
 		return 1;
 	}	
