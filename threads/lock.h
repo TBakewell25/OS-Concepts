@@ -34,4 +34,16 @@ void acquire_lock(struct lock* mutex){
 void release_lock(struct lock* mutex){
 	mutex->lock = 0;
 }
+
+// for glibc mutex implementation
+
+void futex_wait(int* mutex, int expected){
+	while(*mutex == expected)
+		; //spin
+	return;
+	}
+
+void futex_wake(int* mutex){
+	*mutex = 0;
+}	
 #endif
