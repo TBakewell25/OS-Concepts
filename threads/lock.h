@@ -14,7 +14,7 @@ struct lock* init_lock(){
 
 int loseLock(struct lock* mutex){
 	free(mutex);
-	return 1;
+	return 0;
 }
 
 int acquire_lock(struct lock* mutex){
@@ -23,11 +23,11 @@ int acquire_lock(struct lock* mutex){
 	}
 	mutex->lock = 1;
 	
-	return 1;
+	return 0;
 }
 
 int release_lock(struct lock* mutex){
 	mutex->lock = 0;
-	return 1;
+	return 0;
 }
 #endif
