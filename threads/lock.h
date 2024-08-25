@@ -6,28 +6,32 @@ struct lock{
 	//int condition;
 };
 
+//implementation from OSTEP
+int test_and_set(int* lock, int new){
+	int old = *lock; //assign the previous lock value to old
+	*lock = new; //update lock
+	return old; //return the original value
+}
+//increases atomicity
+	
+
 struct lock* init_lock(){
 	struct lock* newLock = (struct lock*) malloc(sizeof(struct lock));
 	newLock->lock = 0;
 	return newLock;
 }
 
-int loseLock(struct lock* mutex){
+void loseLock(struct lock* mutex){
 	free(mutex);
-	return 0;
 }
 
-int acquire_lock(struct lock* mutex){
-	while (mutex->lock != 0){
+void acquire_lock(struct lock* mutex){
+	while (test_and_set(&mutex->lock, 1) == 1){ //test and set
 		//spin
 	}
-	mutex->lock = 1;
-	
-	return 0;
 }
 
-int release_lock(struct lock* mutex){
+void release_lock(struct lock* mutex){
 	mutex->lock = 0;
-	return 0;
 }
 #endif

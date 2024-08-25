@@ -80,11 +80,7 @@ int main(int argc, char** argv){
 
 	printf("Final count: %d\n", (*(args->counter)));
 	
-	if (kill = loseLock(args->mutex)){
-		printf("ERROR: FAILED TO BREAK LOCK");
-		return 1;
-	}
-	
+	loseLock(args->mutex);
 	free(args);
 
 	return 0;
