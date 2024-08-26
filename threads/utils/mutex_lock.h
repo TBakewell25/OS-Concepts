@@ -21,7 +21,7 @@ void mutex_lock(int* mutex){
 			atomic_decrement(mutex);
 			return;
 		}
-		k = *mutex
+		k = *mutex;
 		if (k >= 0)
 			continue;
 		futex_wait(mutex, k);
