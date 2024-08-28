@@ -25,9 +25,9 @@ int main(int argc, char** argv){
 	args->mutex = &(basicLock->lock);
 	
 	printf("Begin\n");
-	pthread_t* threads = create_threads(thread_count, args, &print_messages);
+	pthread_t* threads = create_threads(thread_count, args, &print_messages, &(basicLock->lock));
 	
-	if (destroy_threads(thread_count, threads, &basicLock->lock)){
+	if (destroy_threads(thread_count, threads, &(basicLock->lock))){
 		printf("ERROR: JOIN");
 		return 1;
 	}

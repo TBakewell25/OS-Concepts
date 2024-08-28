@@ -3,8 +3,9 @@
 
 #include "mutex_lock.h"
 
-void* create_threads(const int num, void* args, void* func){
+void* create_threads(const int num, void* args, void* func, int* lock){
 	pthread_t* threads = malloc(sizeof(pthread_t) * num);
+	//mutex_lock(lock);
 	for (int i = 0; i < num; i++){
 		pthread_t newThread;	
 		if (pthread_create(&newThread, NULL, func, args) ==1){
@@ -12,7 +13,9 @@ void* create_threads(const int num, void* args, void* func){
 			return NULL;
 		}
 		threads[i] = newThread;	
+	
 	}
+	//mutex_unlock(lock);
 	return threads;
 }
 

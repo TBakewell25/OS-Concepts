@@ -39,6 +39,7 @@ void release_lock(struct lock* mutex){
 
 void futex_wait(int* mutex, int expected){
 	while(*mutex == expected)
+		//NOTE: race condition found
 		; //spin
 	return;
 	}

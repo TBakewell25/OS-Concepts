@@ -14,6 +14,7 @@ based on OSTEP
 void mutex_lock(int* mutex){
 	int k;
 	if (atomic_bit_test(*mutex, 31) == 0)
+		atomic_increment(mutex);
 		return;
 	atomic_increment(mutex);
 	while(1){
