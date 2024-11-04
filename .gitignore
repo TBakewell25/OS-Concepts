@@ -1,2 +1,6 @@
 bin/
 *.out
+*.o
+*.ko
+*.s
+*.mod
