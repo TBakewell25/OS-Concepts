@@ -19,7 +19,7 @@ void* print_messages(void* args){
 int main(int argc, char** argv){
 	struct lock* basicLock = init_lock();
 	
-	int thread_count = 3;//atoi(argv[argc-1]);
+	int thread_count = 5;//atoi(argv[argc-1]);
 	
 	struct args* args = (struct args*) malloc (sizeof(struct args));	
 	args->mutex = &(basicLock->lock);

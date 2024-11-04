@@ -58,13 +58,12 @@ int deQueue(queue* q){
 	return 0;
 }
 
-int enqueue(queue* q, hash* hash, unsigned int pn){
+void enqueue(queue* q, hash* hash, unsigned int pn){
 	queue_t* new_node = newNode(pn);
 	
 	if (isEmpty(q)){
 		q->head = q->tail = newNode;
 		newNode->left = newNode->right = NULL;
-		return 0;
 	}
 
 	if (isFull(q)){
@@ -81,7 +80,6 @@ int enqueue(queue* q, hash* hash, unsigned int pn){
 	hash->array[pn] = newNode;
 
 	q->filed++;
-	return 0;
 }
 
 
