@@ -15,15 +15,15 @@ static char* name = "Thomas";
 module_param(name, charp, S_IRUGO);
 MODULE_PARM_DESC(name, "the name to display (my own)");
 
-static int __init helloBBB_init(void){
+static int __init helloTCB_init(void){
 	printk(KERN_INFO "EBB: Hello %s from the BBB LKM!\n", name);
 	return 0;
 }
 
-static void __exit helloBBB_exit(void){
+static void __exit helloTCB_exit(void){
 	printk(KERN_INFO "EBB: Goodbye %s from the BBB LKM!\n", name);
 }
 
-module_init(helloBBB_init);
-module_exit(helloBBB_exit);
+module_init(helloTCB_init);
+module_exit(helloTCB_exit);
 
