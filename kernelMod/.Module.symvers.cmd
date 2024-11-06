@@ -1,0 +1,1 @@
+savedcmd_/home/tcb/projects/OS-Concepts/kernelMod/Module.symvers :=  scripts/mod/modpost -M  -a    -N  -o /home/tcb/projects/OS-Concepts/kernelMod/Module.symvers -T /home/tcb/projects/OS-Concepts/kernelMod/modules.order -i Module.symvers -e 
